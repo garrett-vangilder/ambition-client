@@ -8,7 +8,7 @@ import { MenuItem } from 'material-ui/Menu';
 import { FormControl } from 'material-ui/Form';
 import Select from 'material-ui/Select';
 
-import { fetchTeams } from '../actions/salaryActions';
+import { fetchTeams, fetchPositions } from '../actions/salaryActions';
 
 const styles = theme => ({
   root: {
@@ -27,21 +27,20 @@ const styles = theme => ({
 
 class Filter extends React.Component {
   state = {
-    filterValue: '',
+    filterValue: 'val',
     filterDescription: '',
   };
 
   componentWillMount() {
+    this.setState({ filterDescription: this.props.filterType })
     this.props.fetchTeams();
   }
+  
 
   handleChange = event => {
-    console.log('selected', event)
+    console.log('selected', event.target.value);
+    this.setState({ filterValue: event.target.value })
   };
-
-  fetchTeams() {
-    this.props.fetchTeams();
-  }
 
   renderTeams() {
     if (!this.props.teams) return
@@ -54,6 +53,17 @@ class Filter extends React.Component {
     })
   }
 
+  renderPositions() {
+    if (!this.props.positions) return
+    return _.map(this.props.positions, (position) => {
+      return (
+        <MenuItem key={position.id} value={position.name_abbreviated}>
+          <em>{position.name}</em>
+        </MenuItem>
+      );
+    })
+  }
+
   render() {
     const { classes } = this.props;
     const { filterDescription } = this.state;
@@ -61,15 +71,15 @@ class Filter extends React.Component {
     return (
       <form className={classes.root} autoComplete="off">
         <FormControl className={classes.formControl}>
-          <InputLabel htmlFor="age-simple">{ filterDescription }</InputLabel>
+          <InputLabel htmlFor="age-simple">{ this.props.filterType }</InputLabel>
           <Select
-            value={this.state.filterValue}
+            value={this.props.filterType}
             onChange={this.handleChange}
           >
             <MenuItem value="">
               <em>All</em>
             </MenuItem>
-            { this.renderTeams() }
+            { this.props.filterType === 'position' ? this.renderPositions() : this.renderTeams() }
           </Select>
         </FormControl>
       </form>
@@ -78,10 +88,12 @@ class Filter extends React.Component {
 }
 
 const mapStateToProps = ({ rootReducer }) => {
-  const { teams } = rootReducer.salaryReducer
+  const { teams, filterType, positions } = rootReducer.salaryReducer
   return {
+    positions,
     teams,
+    filterType
   }
 }
 
-export default connect(mapStateToProps, { fetchTeams })(withStyles(styles)(Filter));
+export default connect(mapStateToProps, { fetchTeams, fetchPositions })(withStyles(styles)(Filter));
