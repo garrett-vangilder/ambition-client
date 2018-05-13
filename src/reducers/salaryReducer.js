@@ -1,8 +1,9 @@
-import { FETCH_TEAMS, SET_FILTER, FETCH_POSITIONS } from '../action_types/salaryTypes'
+import { FETCH_TEAMS, SET_FILTER, FETCH_POSITIONS, FETCH_SALARIES } from '../action_types/salaryTypes'
 
 const INITIAL_STATE = {
   teams: [],
   positions: [],
+  salaries: [],
   data: null
 };
 
@@ -12,6 +13,12 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         teams: action.payload
+      }
+
+    case FETCH_SALARIES:
+      return {
+        ...state,
+        salaries: action.payload
       }
 
     case FETCH_POSITIONS:
@@ -25,6 +32,7 @@ export default function (state = INITIAL_STATE, action) {
           ...state,
           filterType: action.payload
         }
+      
     default:
       return state;
   }

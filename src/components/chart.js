@@ -1,28 +1,46 @@
 import React, { Component } from 'react';
-
+import { connect } from 'react-redux';
 import ReactHighcharts from 'react-highcharts';
+import _ from 'lodash';
 
 
 class Chart extends Component {
   fetchConfig() {
+    if (!this.props.salaries) return;
+    const categories = [];
+    const salaries = [];
+
+    _.map(this.props.salaries, (salary) => {
+      categories.push(salary.description);
+      salaries.push(salary.value_in_dollars);
+    })
+    
     return {
       xAxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        categories
       },
       chart: {
         type: 'bar'
       },
       series: [{
-        data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 295.6, 454.4]
+        data: salaries
       }]
     }
   }
   render() {
-  return (
-    <div>
-      <ReactHighcharts config={this.fetchConfig()} />
-    </div>);
+    return (
+      <div>
+        <ReactHighcharts config={this.fetchConfig()} />
+      </div>);
   }
 }
 
-export default Chart;
+const mapStateToProps = ({ rootReducer }) => {
+  const { salaries } = rootReducer.salaryReducer;
+  return {
+    ...this.state,
+    salaries
+  };
+};
+
+export default connect(mapStateToProps, null)(Chart);
