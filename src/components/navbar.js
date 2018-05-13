@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
 import Tabs, { Tab } from 'material-ui/Tabs';
+import { connect } from 'react-redux';
 
 
 const styles = theme => ({
@@ -40,4 +40,10 @@ class Navbar extends Component {
   }
 }
 
-export default withStyles(styles)(Navbar);
+const mapStateToProps = (reducers) => {
+  return {
+    ...this.state
+  };
+};
+
+export default connect(mapStateToProps, null)(withStyles(styles)(Navbar));
