@@ -7,7 +7,7 @@ const BASE_API = 'http://vast-falls-69803.herokuapp.com/'
 const fetchSalaries = (filterType, query = '') => (dispatch) => {
   const axiosInstance = axios.create({
     baseURL: BASE_API,
-    timeout: 8000,
+    timeout: 20000,
     responseType: 'json',
     headers: { 'Content-Type': 'application/json' }
   });
@@ -15,7 +15,6 @@ const fetchSalaries = (filterType, query = '') => (dispatch) => {
   const queryType = 
   axiosInstance.get(`/${filterType}s/salary/?${filterType}=${query}`)
     .then((res) => {
-      console.log(res);
       dispatch({
         type: FETCH_SALARIES,
         payload: _.sortBy(res.data, (data) => data.value_in_dollars)

@@ -38,7 +38,6 @@ class Filter extends React.Component {
   
 
   handleChange = event => {
-    console.log('selected', event.target.value);
     this.setState({ filterValue: event.target.value })
   };
 
@@ -71,7 +70,7 @@ class Filter extends React.Component {
     return (
       <form className={classes.root} autoComplete="off">
         <FormControl className={classes.formControl}>
-          <InputLabel htmlFor="age-simple">{ this.props.filterType }</InputLabel>
+          <InputLabel htmlFor="age-simple">{ this.props.filterType === 'position' ? 'Teams' : 'Positions' }</InputLabel>
           <Select
             value={this.props.filterType}
             onChange={this.handleChange}
@@ -79,7 +78,7 @@ class Filter extends React.Component {
             <MenuItem value="">
               <em>All</em>
             </MenuItem>
-            { this.props.filterType === 'position' ? this.renderPositions() : this.renderTeams() }
+            { this.props.filterType !== 'position' ? this.renderPositions() : this.renderTeams() }
           </Select>
         </FormControl>
       </form>
