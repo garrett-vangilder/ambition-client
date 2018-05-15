@@ -7,7 +7,7 @@ const BASE_API = 'http://vast-falls-69803.herokuapp.com/'
 const fetchSalaries = (filterType, query = '') => (dispatch) => {
   const axiosInstance = axios.create({
     baseURL: BASE_API,
-    timeout: 20000,
+    timeout: 40000,
     responseType: 'json',
     headers: { 'Content-Type': 'application/json' }
   });
@@ -28,7 +28,7 @@ const fetchSalaries = (filterType, query = '') => (dispatch) => {
 const fetchTeams = () => (dispatch) => {
   const axiosInstance = axios.create({
     baseURL: BASE_API,
-    timeout: 1000,
+    timeout: 10000,
     responseType: 'json',
     headers: { 'Content-Type': 'application/json' }
   });
@@ -47,7 +47,7 @@ const fetchTeams = () => (dispatch) => {
 const fetchPositions = () => (dispatch) => {
   const axiosInstance = axios.create({
     baseURL: BASE_API,
-    timeout: 1000,
+    timeout: 10000,
     responseType: 'json',
     headers: { 'Content-Type': 'application/json' }
   });
