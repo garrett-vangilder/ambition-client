@@ -3,7 +3,7 @@ import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import { connect } from 'react-redux';
-import { fetchTeams, fetchSalaries, fetchPositions, setFilter } from '../actions/salaryActions';
+import { fetchTeams, fetchSalaries, fetchPositions, setFilter, setIsLoading } from '../actions/salaryActions';
 
 const styles = theme => ({
   root: {
@@ -20,16 +20,18 @@ class Navbar extends Component {
   constructor() {
     super();
   }
-componentWillMount() {
-  this.props.setFilter('position')
-  this.props.fetchPositions();
-  this.props.fetchSalaries('position')
-}
+
+  componentWillMount() {
+    this.props.setFilter('team')
+    this.props.fetchPositions();
+    this.props.fetchSalaries('team')
+  }
 
   handleChange = (event, value) => {
     this.setState({ value });
-    value ? this.props.setFilter('team') : this.props.setFilter('position')
-    value ? this.props.fetchSalaries('team') : this.props.fetchSalaries('position')
+    this.props.setIsLoading();
+    value ? this.props.setFilter('position') : this.props.setFilter('team')
+    value ? this.props.fetchSalaries('position') : this.props.fetchSalaries('team')
   };
 
 
@@ -58,4 +60,4 @@ const mapStateToProps = ({ rootReducer }) => {
   };
 };
 
-export default connect(mapStateToProps, { fetchTeams, fetchPositions, setFilter, fetchSalaries })(withStyles(styles)(Navbar));
+export default connect(mapStateToProps, { fetchTeams, fetchPositions, setFilter, fetchSalaries, setIsLoading })(withStyles(styles)(Navbar));

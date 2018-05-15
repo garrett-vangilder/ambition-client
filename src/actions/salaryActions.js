@@ -1,6 +1,6 @@
 import axios from 'axios';
 import _ from 'lodash';
-import { FETCH_TEAMS, FETCH_SALARIES, SET_FILTER, FETCH_POSITIONS } from '../action_types/salaryTypes';
+import { FETCH_TEAMS, FETCH_SALARIES, SET_FILTER, FETCH_POSITIONS, SET_FILTER_DESCRIPTOR, IS_LOADING } from '../action_types/salaryTypes';
 
 const BASE_API = 'http://vast-falls-69803.herokuapp.com/'
 
@@ -13,7 +13,7 @@ const fetchSalaries = (filterType, query = '') => (dispatch) => {
   });
 
   const queryType = 
-  axiosInstance.get(`/${filterType}s/salary/?${filterType}=${query}`)
+  axiosInstance.get(`/${filterType === 'team' ? 'position' : 'team'}s/salary/?${filterType === 'position' ? 'position_name' : 'team_name'}=${query}`)
     .then((res) => {
       dispatch({
         type: FETCH_SALARIES,
@@ -34,7 +34,6 @@ const fetchTeams = () => (dispatch) => {
   });
   axiosInstance.get(`/teams/`)
     .then((res) => {
-      console.log(res);
       dispatch({
         type: FETCH_TEAMS,
         payload: res.data
@@ -54,7 +53,6 @@ const fetchPositions = () => (dispatch) => {
   });
   axiosInstance.get(`/positions/`)
     .then((res) => {
-      console.log(res);
       dispatch({
         type: FETCH_POSITIONS,
         payload: res.data
@@ -72,4 +70,17 @@ const setFilter = (filterType) => (dispatch) => {
    });
 }
 
-export { fetchTeams, setFilter, fetchPositions, fetchSalaries };
+const setFilterDescriptor = (descriptor) => (dispatch) => {
+  dispatch({ 
+    type: SET_FILTER_DESCRIPTOR,
+    payload: descriptor
+   });
+}
+
+const setIsLoading = () => (dispatch) => {
+  dispatch({ 
+    type: IS_LOADING,
+   });
+}
+
+export { fetchTeams, setFilter, fetchPositions, fetchSalaries, setFilterDescriptor, setIsLoading };
