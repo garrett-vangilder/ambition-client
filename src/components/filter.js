@@ -8,16 +8,17 @@ import { MenuItem } from 'material-ui/Menu';
 import { FormControl } from 'material-ui/Form';
 import Select from 'material-ui/Select';
 
-import { fetchTeams, fetchPositions } from '../actions/salaryActions';
+import { fetchTeams, fetchPositions, fetchSalaries, setFilterDescriptor, setIsLoading } from '../actions/salaryActions';
 
 const styles = theme => ({
   root: {
     display: 'flex',
     flexWrap: 'wrap',
+    padding: '25px;'
   },
   formControl: {
     margin: theme.spacing.unit,
-    minWidth: 120,
+    minWidth: 400,
   },
   selectEmpty: {
     marginTop: theme.spacing.unit * 2,
@@ -27,7 +28,6 @@ const styles = theme => ({
 
 class Filter extends React.Component {
   state = {
-    filterValue: 'val',
     filterDescription: '',
   };
 
@@ -35,11 +35,20 @@ class Filter extends React.Component {
     this.setState({ filterDescription: this.props.filterType })
     this.props.fetchTeams();
   }
-  
+
 
   handleChange = event => {
-    console.log('selected', event.target.value);
-    this.setState({ filterValue: event.target.value })
+    const { filterType } = this.props;
+    const filterChoices = this.props[`${filterType}s`];
+    const chosenItem = filterChoices.find(choice => choice.name_abbreviated === event.target.value);
+    this.setState({ [event.target.name]: event.target.value });
+    this.props.setIsLoading();
+    if (chosenItem) {
+      this.props.setFilterDescriptor(chosenItem.name);
+    } else {
+      this.props.setFilterDescriptor('All')
+    }
+    this.props.fetchSalaries(filterType, event.target.value);
   };
 
   renderTeams() {
@@ -66,15 +75,17 @@ class Filter extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { filterDescription } = this.state;
 
     return (
       <form className={classes.root} autoComplete="off">
         <FormControl className={classes.formControl}>
-          <InputLabel htmlFor="age-simple">{ this.props.filterType }</InputLabel>
+          <InputLabel htmlFor="age-simple">{ this.props.filterType === 'position' ? 'Positions' : 'Teams' }</InputLabel>
           <Select
-            value={this.props.filterType}
+            value={this.state.filterDescription}
             onChange={this.handleChange}
+            inputProps={{
+              name: 'filterDescription'
+            }}
           >
             <MenuItem value="">
               <em>All</em>
@@ -88,12 +99,13 @@ class Filter extends React.Component {
 }
 
 const mapStateToProps = ({ rootReducer }) => {
-  const { teams, filterType, positions } = rootReducer.salaryReducer
+  const { teams, filterType, positions, filterDescriptor } = rootReducer.salaryReducer
   return {
     positions,
     teams,
-    filterType
+    filterType,
+    filterDescriptor
   }
 }
 
-export default connect(mapStateToProps, { fetchTeams, fetchPositions })(withStyles(styles)(Filter));
+export default connect(mapStateToProps, { fetchTeams, fetchPositions, fetchSalaries, setFilterDescriptor, setIsLoading })(withStyles(styles)(Filter));

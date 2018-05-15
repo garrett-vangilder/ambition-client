@@ -26,3 +26,21 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.container {
+  display: flex;
+  flex-direction: row;
+  padding: 25px;
+}
+
+.container > div {
+  margin-top: 25px;
+  width: 50%;
+  justify-content: center;
+}
+
+.spinner {
+  position: fixed; /* or absolute */
+  top: 50%;
+  left: 50%;
+}
